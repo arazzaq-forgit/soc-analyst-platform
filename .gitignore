@@ -17,3 +17,5 @@ build/
 .DS_Store
 .vscode/
 .idea/
+# Raw datasets — too large for git, download separately
+ml/data/

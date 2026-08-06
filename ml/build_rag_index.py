@@ -33,10 +33,10 @@ for hit in hits:
     alert = hit["_source"]
     # A readable text summary of the alert - this is what semantic search matches against
     text = (
-        f"Alert on {alert['asset_id']}: {alert['description']}. "
-        f"Severity: {alert['severity_raw']}. "
-        f"Source: {alert['source_system']}."
-    )
+    f"Alert {alert['alert_id']} on {alert['asset_id']} at {alert['timestamp']}: "
+    f"{alert['description']}. Severity: {alert['severity_raw']}. "
+    f"Source: {alert['source_system']}."
+)
     documents.append(text)
     metadatas.append({
         "alert_id": alert["alert_id"],

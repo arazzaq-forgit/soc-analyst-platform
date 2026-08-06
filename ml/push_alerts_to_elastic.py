@@ -10,7 +10,10 @@ load_dotenv()
 # Connect to Elastic
 client = Elasticsearch(
     os.getenv("ELASTIC_URL"),
-    api_key=os.getenv("ELASTIC_API_KEY")
+    api_key=os.getenv("ELASTIC_API_KEY"),
+    request_timeout=60,       # give it up to 60 seconds instead of the default
+    max_retries=3,            # automatically retry failed requests
+    retry_on_timeout=True,
 )
 
 # ---- MITRE ATT&CK mapping table ----
@@ -97,7 +100,12 @@ actions = [
     for alert in alerts
 ]
 
-success, errors = helpers.bulk(client, actions, raise_on_error=False)
+success, errors = helpers.bulk(
+    client.options(request_timeout=60),
+    actions,
+    raise_on_error=False,
+    chunk_size=100,
+)
 print(f"Successfully indexed: {success}")
 print(f"Errors: {len(errors) if errors else 0}")
 

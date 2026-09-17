@@ -23,3 +23,5 @@ ml/data/
 # Windows system files
 desktop.ini
 ml/chroma_db/
+# Local SQLite dev database - generated, not source code
+dev.db

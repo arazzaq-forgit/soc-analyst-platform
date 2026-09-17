@@ -9,6 +9,9 @@ from app.database import Base, engine
 from app.rate_limit import limiter
 from app.routers import auth, admin
 
+# Import models so SQLAlchemy registers their tables before create_all runs.
+from app import models, models_integration  # noqa: F401
+
 logging.basicConfig(level=logging.INFO)
 
 # Creates tables if they don't exist yet. Fine for early dev;
@@ -25,3 +28,8 @@ app.add_middleware(SlowAPIMiddleware)
 
 app.include_router(auth.router)
 app.include_router(admin.router)
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}

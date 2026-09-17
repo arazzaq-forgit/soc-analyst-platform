@@ -51,6 +51,12 @@ Write a short investigation brief with exactly these sections:
 4. RECOMMENDED ACTION - one concrete next step for the analyst
 
 Rules:
+Rules:
+- Only use information from the alerts provided above. Do not invent details.
+- Every factual claim in EVIDENCE must cite an alert ID from the list above.
+- If the alerts don't support a clear conclusion, say so honestly rather than guessing.
+- For RECOMMENDED ACTION, only suggest actions directly supported by fields present in the alerts (asset_id, severity, mitre_technique). Do NOT reference source IPs, source systems, or any data not explicitly shown above - the alerts do not currently include source IP addresses.
+- CITATION RULE: if a claim describes a pattern across multiple alerts (e.g. "multiple attempts", "several alerts", "repeated"), you MUST cite ALL relevant alert IDs together in one bracket, e.g. [alrt_a, alrt_b, alrt_c]. Do NOT write the same aggregate claim as separate lines each citing only one ID - that overstates what a single citation supports. If you're only citing one alert ID, phrase the claim about that single alert only (e.g. "An SSH brute-force attempt was detected" not "Multiple attempts were detected").
 - Only use information from the alerts provided above. Do not invent details.
 - Every factual claim in EVIDENCE must cite an alert ID from the list above.
 - If the alerts don't support a clear conclusion, say so honestly rather than guessing.

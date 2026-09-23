@@ -53,10 +53,18 @@ Don't strip or summarize this field during ingestion; store it exactly as receiv
 
 ## Open questions (update this section as we go)
 
-- [ ] Do we need a `false_positive_score` field written back by Ghouse's model, or does that
+ ## Open questions (update this section as we go)
+
+- [x] Do we need a `false_positive_score` field written back by Ghouse's model, or does that
       live in a separate table Wahab manages?
+      **Resolved (Wahab):** lives directly on the `alerts` table — it's a strict 1:1
+      relationship with the alert, so a separate table would just add a join for no benefit.
 - [ ] Should `asset_criticality` be inferred automatically from `asset_id`, or does someone
       maintain a manual asset-criticality list?
+
+**Also added by Wahab (not in the original schema):** a `triage_status` field on the alerts
+table (`pending` / `cleared_threshold` / `investigating` / `resolved` / `dismissed`) — needed
+so the backend can track pipeline state without re-deriving it from other fields on every query.
 
 ## Status
 First draft — Week 1. Expect this to evolve once Ghouse and Wahab start building against it

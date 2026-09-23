@@ -10,7 +10,7 @@ from app.rate_limit import limiter
 from app.routers import auth, admin
 
 # Import models so SQLAlchemy registers their tables before create_all runs.
-from app import models, models_integration  # noqa: F401
+from app import models, models_integration, models_alert, models_investigation, models_audit  # noqa: F401
 
 logging.basicConfig(level=logging.INFO)
 

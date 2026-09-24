@@ -20,7 +20,7 @@ chroma_client = chromadb.PersistentClient(path="ml/chroma_db")
 collection = chroma_client.get_or_create_collection(name="alert_history")
 
 # Pull alerts back from Elastic
-results = es_client.search(index="alerts", size=500, query={"match_all": {}})
+results = es_client.search(index="alerts", size=1000, query={"match_all": {}})
 hits = results["hits"]["hits"]
 print(f"Pulled {len(hits)} alerts from Elastic")
 

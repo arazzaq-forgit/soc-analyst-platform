@@ -6,7 +6,7 @@ incident briefs in real time.
 
 ## Team
 - Ghouse — ML / Triage Lead
-- Razzaq — LLM/RAG + Cybersecurity Lead
+- Razzaq — LLM/RAG + Cybersecurity Lead 
 - Wahab — Backend + Frontend Lead
 
 ## Structure

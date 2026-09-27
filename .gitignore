@@ -17,3 +17,16 @@ build/
 .DS_Store
 .vscode/
 .idea/
+
+# ML datasets
+ml/data/
+
+# Generated ML model artifacts
+ml/models/
+
+# Generated ML results
+ml/results/
+
+# Python cache
+__pycache__/
+*.py[cod]

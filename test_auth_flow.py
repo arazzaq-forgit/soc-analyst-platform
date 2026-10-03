@@ -9,7 +9,7 @@ Usage:
         python test_auth_flow.py
 
 Each run generates a fresh random email so you can run it repeatedly
-without hitting "Email already registered" errors.
+without hitting "Email already registered" error.
 """
 
 import random

@@ -14,7 +14,10 @@ TEST_QUERIES = [
     "FTP brute force attack",
     "unusual traffic on host-22",
     "port scanning activity",
-    "normal benign traffic",  # tests behavior on non-attack data too
+    "normal benign traffic",
+    "denial of service attack",
+    "DoS Hulk traffic pattern",
+    "slowloris style attack",
 ]
 
 

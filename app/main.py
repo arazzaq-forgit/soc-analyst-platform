@@ -7,7 +7,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.database import Base, engine
 from app.rate_limit import limiter
-from app.routers import auth, admin, investigations
+from app.routers import auth, admin, investigations, alerts
 
 # Import models so SQLAlchemy is aware of them (needed for relationships
 # to resolve correctly, e.g. Investigation.alert). Table creation itself
@@ -33,7 +33,7 @@ app.add_middleware(SlowAPIMiddleware)
 app.include_router(auth.router)
 app.include_router(admin.router)
 app.include_router(investigations.router)
-
+app.include_router(alerts.router)
 
 @app.get("/health")
 def health():

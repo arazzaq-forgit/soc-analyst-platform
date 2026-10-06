@@ -1,128 +1,110 @@
 """
-Alert ingestion endpoint. Accepts a new alert matching docs/alert-schema.json,
-validates it, and stores it in the Alert table - this is the entry point for
-getting real alert data into the system (from Elastic, a feed, or a manual
-test POST), rather than only ever inserting test data via one-off scripts.
+The alert-ingestion endpoint. This is the front door every SIEM/EDR/cloud
+audit source sends alerts through, per /docs/alert-schema.md.
+
+This is deliberately a SKELETON: it validates, normalizes, and stores an
+alert, but does NOT yet call Ghouse's classifier or Razzaq's investigation
+agent (those don't exist as callable services yet). Wiring those in is
+future work once they're ready — this endpoint's job right now is just to
+prove the ingestion pipe itself is solid.
 """
 
-from datetime import datetime, timezone
-from typing import List, Optional
+import uuid
 
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.dependencies import get_db, get_current_user  # adjust names if different
-from app.models_alert import Alert, AlertSource, AssetCriticality, TriageStatus
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.models import User
+from app.models_alert import Alert, TriageStatus
 from app.models_audit import AuditLog
+from app.schemas_alert import AlertIngest, AlertOut
 
 router = APIRouter(prefix="/alerts", tags=["alerts"])
 
 
-# --- Request/response schemas, mirroring docs/alert-schema.json ---
-
-class AlertIn(BaseModel):
-    alert_id: str
-    timestamp: Optional[datetime] = None  # defaults to now if not given
-    source: AlertSource
-    source_system: Optional[str] = None
-    severity_raw: str
-    asset_id: str
-    asset_criticality: AssetCriticality = AssetCriticality.UNKNOWN
-    description: str
-    mitre_technique: Optional[str] = None
-    raw_log: str
-    related_alert_ids: List[str] = Field(default_factory=list)
-
-
-class AlertOut(BaseModel):
-    id: int
-    alert_id: str
-    timestamp: datetime
-    source: AlertSource
-    source_system: Optional[str]
-    severity_raw: str
-    asset_id: str
-    asset_criticality: AssetCriticality
-    description: str
-    mitre_technique: Optional[str]
-    related_alert_ids: List[str]
-    triage_status: TriageStatus
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-
-
-@router.post("", response_model=AlertOut, status_code=201)
+@router.post("/ingest", response_model=AlertOut, status_code=status.HTTP_201_CREATED)
 def ingest_alert(
-    alert_in: AlertIn,
+    payload: AlertIngest,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
-    """Ingests one new alert. Rejects duplicates (same alert_id) with a 400,
-    since alert_id is expected to be unique per the schema."""
+    """
+    Accept one normalized alert and store it, pending triage.
 
-    existing = db.query(Alert).filter(Alert.alert_id == alert_in.alert_id).first()
-    if existing:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Alert '{alert_in.alert_id}' already exists (id={existing.id})",
-        )
+    Auth-protected (not open to the public internet) — in production this
+    will likely be called by an ingestion service/API key rather than an
+    interactive user, but for now it reuses the same JWT dependency as
+    everything else so there's exactly one auth mechanism in the system,
+    not two half-built ones.
+    """
+    # Generate an ID if the source didn't provide one, per the schema doc.
+    alert_id = payload.alert_id or f"alrt_{uuid.uuid4().hex[:12]}"
 
     alert = Alert(
-        alert_id=alert_in.alert_id,
-        timestamp=alert_in.timestamp or datetime.now(timezone.utc),
-        source=alert_in.source,
-        source_system=alert_in.source_system,
-        severity_raw=alert_in.severity_raw,
-        asset_id=alert_in.asset_id,
-        asset_criticality=alert_in.asset_criticality,
-        description=alert_in.description,
-        mitre_technique=alert_in.mitre_technique,
-        raw_log=alert_in.raw_log,
-        related_alert_ids=alert_in.related_alert_ids,
+        alert_id=alert_id,
+        timestamp=payload.timestamp,
+        source=payload.source,
+        source_system=payload.source_system,
+        severity_raw=payload.severity_raw,
+        asset_id=payload.asset_id,
+        asset_criticality=payload.asset_criticality,
+        description=payload.description,
+        mitre_technique=payload.mitre_technique,
+        raw_log=payload.raw_log,
+        related_alert_ids=payload.related_alert_ids,
         triage_status=TriageStatus.PENDING,
     )
+
     db.add(alert)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Alert with alert_id '{alert_id}' already exists.",
+        )
     db.refresh(alert)
 
-    db.add(AuditLog(
+    # Audit trail: this is an AI-pipeline event (ingestion), not a human
+    # action, hence actor_type="system" and no actor_user_id — the same
+    # pattern used by the audit_logs schema design.
+    audit = AuditLog(
         event_type="alert_ingested",
-        actor_type="user",
-        actor_user_id=getattr(current_user, "id", None),
+        actor_type="system",
         alert_id=alert.id,
-        detail={"alert_id": alert.alert_id, "source": alert.source, "severity_raw": alert.severity_raw},
-    ))
+        detail={"source": alert.source.value, "asset_id": alert.asset_id},
+    )
+    db.add(audit)
     db.commit()
 
     return alert
-
-
-@router.get("", response_model=List[AlertOut])
-def list_alerts(
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user),
-    limit: int = 50,
-):
-    """Lists the most recently ingested alerts, newest first."""
-    return (
-        db.query(Alert)
-        .order_by(Alert.created_at.desc())
-        .limit(limit)
-        .all()
-    )
 
 
 @router.get("/{alert_id}", response_model=AlertOut)
 def get_alert(
     alert_id: str,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
-    """Retrieves a single alert by its string alert_id."""
+    """Fetch a single alert by its source-facing alert_id (not the internal DB id)."""
     alert = db.query(Alert).filter(Alert.alert_id == alert_id).first()
     if not alert:
-        raise HTTPException(status_code=404, detail=f"Alert '{alert_id}' not found")
+        raise HTTPException(status_code=404, detail="Alert not found")
     return alert
+
+
+@router.get("", response_model=list[AlertOut])
+def list_alerts(
+    status_filter: TriageStatus | None = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """List alerts, optionally filtered by triage_status (e.g. ?status_filter=pending)."""
+    query = db.query(Alert)
+    if status_filter:
+        query = query.filter(Alert.triage_status == status_filter)
+    return query.order_by(Alert.timestamp.desc()).all()

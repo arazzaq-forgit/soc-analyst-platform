@@ -1,12 +1,10 @@
-"""
+﻿"""
 The alert-ingestion endpoint. This is the front door every SIEM/EDR/cloud
 audit source sends alerts through, per /docs/alert-schema.md.
 
 This is deliberately a SKELETON: it validates, normalizes, and stores an
 alert, but does NOT yet call Ghouse's classifier or Razzaq's investigation
-agent (those don't exist as callable services yet). Wiring those in is
-future work once they're ready — this endpoint's job right now is just to
-prove the ingestion pipe itself is solid.
+agent (those don't exist as callable services yet).
 """
 
 import uuid
@@ -31,16 +29,6 @@ def ingest_alert(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Accept one normalized alert and store it, pending triage.
-
-    Auth-protected (not open to the public internet) — in production this
-    will likely be called by an ingestion service/API key rather than an
-    interactive user, but for now it reuses the same JWT dependency as
-    everything else so there's exactly one auth mechanism in the system,
-    not two half-built ones.
-    """
-    # Generate an ID if the source didn't provide one, per the schema doc.
     alert_id = payload.alert_id or f"alrt_{uuid.uuid4().hex[:12]}"
 
     alert = Alert(
@@ -69,9 +57,6 @@ def ingest_alert(
         )
     db.refresh(alert)
 
-    # Audit trail: this is an AI-pipeline event (ingestion), not a human
-    # action, hence actor_type="system" and no actor_user_id — the same
-    # pattern used by the audit_logs schema design.
     audit = AuditLog(
         event_type="alert_ingested",
         actor_type="system",
@@ -90,7 +75,6 @@ def get_alert(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Fetch a single alert by its source-facing alert_id (not the internal DB id)."""
     alert = db.query(Alert).filter(Alert.alert_id == alert_id).first()
     if not alert:
         raise HTTPException(status_code=404, detail="Alert not found")
@@ -100,11 +84,11 @@ def get_alert(
 @router.get("", response_model=list[AlertOut])
 def list_alerts(
     status_filter: TriageStatus | None = None,
+    limit: int = 50,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """List alerts, optionally filtered by triage_status (e.g. ?status_filter=pending)."""
     query = db.query(Alert)
     if status_filter:
         query = query.filter(Alert.triage_status == status_filter)
-    return query.order_by(Alert.timestamp.desc()).all()
+    return query.order_by(Alert.timestamp.desc()).limit(limit).all()

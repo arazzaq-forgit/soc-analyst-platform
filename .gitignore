@@ -23,3 +23,6 @@ ml/data/
 # Windows system files
 desktop.ini
 dev.db
+
+# ChromaDB local vector store - generated, not source code
+ml/chroma_db/

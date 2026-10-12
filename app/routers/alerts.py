@@ -28,6 +28,7 @@ class AlertIn(BaseModel):
     source_system: Optional[str] = None
     severity_raw: str
     asset_id: str
+    source_ip: Optional[str] = None
     asset_criticality: AssetCriticality = AssetCriticality.UNKNOWN
     description: str
     mitre_technique: Optional[str] = None
@@ -43,6 +44,7 @@ class AlertOut(BaseModel):
     source_system: Optional[str]
     severity_raw: str
     asset_id: str
+    source_ip: Optional[str] = None
     asset_criticality: AssetCriticality
     description: str
     mitre_technique: Optional[str]
@@ -77,6 +79,7 @@ def ingest_alert(
         source_system=alert_in.source_system,
         severity_raw=alert_in.severity_raw,
         asset_id=alert_in.asset_id,
+        source_ip=alert_in.source_ip,
         asset_criticality=alert_in.asset_criticality,
         description=alert_in.description,
         mitre_technique=alert_in.mitre_technique,

@@ -47,6 +47,7 @@ jobs:
           KEY=$(python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
           echo "ENCRYPTION_KEY=$KEY" >> $GITHUB_ENV
           echo "SECRET_KEY=ci-only-not-a-real-secret" >> $GITHUB_ENV
+          echo "GROQ_API_KEY=dummy-key-for-ci-import-only" >> $GITHUB_ENV
       - name: Create database tables
         run: alembic upgrade head
       - name: Start server

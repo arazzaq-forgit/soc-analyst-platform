@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "wahab/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install ruff
+        run: pip install ruff
+      - name: Lint (real errors only)
+        run: ruff check app --select E9,F63,F7,F82
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: auth
+            files: "test_auth_flow.py"
+          - group: rbac
+            files: "test_rbac_flow.py"
+          - group: ratelimit
+            files: "test_rate_limit.py"
+          - group: core
+            files: "test_encryption.py test_schema.py test_ingestion.py test_streaming.py"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Create test environment variables
+        run: |
+          KEY=$(python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
+          echo "ENCRYPTION_KEY=$KEY" >> $GITHUB_ENV
+          echo "SECRET_KEY=ci-only-not-a-real-secret" >> $GITHUB_ENV
+      - name: Create database tables
+        run: alembic upgrade head
+      - name: Start server
+        run: |
+          nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 > server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8000/docs > /dev/null && exit 0
+            sleep 1
+          done
+          echo "Server did not start"; cat server.log; exit 1
+      - name: Run tests (${{ matrix.group }})
+        run: |
+          for f in ${{ matrix.files }}; do
+            echo "=== $f ==="
+            python $f || exit 1
+          done
+      - name: Show server log on failure
+        if: failure()
+        run: cat server.log

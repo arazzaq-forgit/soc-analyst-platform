@@ -1,4 +1,4 @@
-﻿"""
+"""
 The alert-ingestion endpoint. This is the front door every SIEM/EDR/cloud
 audit source sends alerts through, per /docs/alert-schema.md.
 

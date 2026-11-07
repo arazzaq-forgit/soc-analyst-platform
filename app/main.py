@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 
 from fastapi import FastAPI
 from slowapi import _rate_limit_exceeded_handler

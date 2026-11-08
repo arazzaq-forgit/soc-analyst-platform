@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +10,8 @@ import SeverityBadge from "../components/SeverityBadge";
 import StatusBadge from "../components/StatusBadge";
 import { formatTimestamp, parseTimestamp } from "../lib/alertDisplay";
 import { useInvestigationStream } from "../lib/useInvestigationStream";
+import EvidencePanel from "../components/EvidencePanel";
+import { parseBrief } from "../lib/citations";
 import type { StreamStatus } from "../lib/useInvestigationStream";
 
 const STATUS_NOTE: Record<StreamStatus, { text: string; cls: string }> = {
@@ -93,6 +96,9 @@ function InvestigationView({ alertId }: { alertId: string }) {
     queryFn: () => fetchAlert(alertId),
   });
   const { text, status, error, start, stop } = useInvestigationStream(alertId);
+  const parsed = useMemo(() => parseBrief(text, status === "done"), [text, status]);
+  const [selected, setSelected] = useState<number | null>(null);
+  const selectedCitation = parsed.citations.find((c) => c.n === selected) ?? null;
 
   const alert = alertQuery.data;
   const streaming = status === "streaming";
@@ -108,6 +114,7 @@ function InvestigationView({ alertId }: { alertId: string }) {
 
   return (
     <section>
+      <EvidencePanel citation={selectedCitation} alert={alert} alertId={alertId} onClose={() => setSelected(null)} />
       <Link to="/investigate" className="font-mono text-xs text-accent hover:underline">
         Back to alert list
       </Link>
@@ -193,7 +200,7 @@ function InvestigationView({ alertId }: { alertId: string }) {
             {text === "" && status !== "streaming" ? (
               <p className="text-sm text-muted">The incident brief will appear here.</p>
             ) : (
-              <BriefView text={text} streaming={streaming} />
+              <BriefView brief={parsed} streaming={streaming} selected={selected} onSelect={setSelected} />
             )}
           </div>
         </div>
@@ -207,3 +214,4 @@ export default function InvestigatePage() {
   if (!alertId) return <AlertPicker />;
   return <InvestigationView key={alertId} alertId={alertId} />;
 }
+

@@ -19,6 +19,10 @@ export function fetchAlerts(limit = 200): Promise<Alert[]> {
   return apiFetch<Alert[]>(`/alerts?limit=${limit}`);
 }
 
+export function fetchAlert(alertId: string): Promise<Alert> {
+  return apiFetch<Alert>(`/alerts/${encodeURIComponent(alertId)}`);
+}
+
 export function ingestAlert(payload: AlertIngestPayload): Promise<Alert> {
   return apiFetch<Alert>("/alerts/ingest", { method: "POST", body: payload });
 }

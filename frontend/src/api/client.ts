@@ -52,7 +52,7 @@ async function toApiError(res: Response): Promise<ApiError> {
 
 let refreshPromise: Promise<boolean> | null = null;
 
-function refreshAccessToken(): Promise<boolean> {
+export function refreshAccessToken(): Promise<boolean> {
   const refresh = getRefreshToken();
   if (!refresh) return Promise.resolve(false);
 
@@ -78,7 +78,7 @@ function refreshAccessToken(): Promise<boolean> {
   return refreshPromise;
 }
 
-function forceLogout(): void {
+export function forceLogout(): void {
   clearTokens();
   window.dispatchEvent(new Event(AUTH_LOGOUT_EVENT));
 }
@@ -123,3 +123,4 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
 }
+

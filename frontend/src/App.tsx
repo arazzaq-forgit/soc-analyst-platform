@@ -8,6 +8,7 @@ import AuditPage from "./pages/AuditPage";
 import IngestPage from "./pages/IngestPage";
 import InvestigatePage from "./pages/InvestigatePage";
 import LoginPage from "./pages/LoginPage";
+import MlTriagePage from "./pages/MlTriagePage";
 import TriagePage from "./pages/TriagePage";
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="/investigate/:alertId" element={<InvestigatePage />} />
             <Route path="/ingest" element={<IngestPage />} />
             <Route path="/audit" element={<AuditPage />} />
+            <Route path="/ml" element={<MlTriagePage />} />
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminPage />} />
             </Route>
@@ -32,3 +34,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

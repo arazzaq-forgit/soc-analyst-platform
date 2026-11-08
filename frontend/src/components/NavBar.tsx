@@ -13,6 +13,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/investigate", label: "AI Investigation Studio" },
   { to: "/ingest", label: "Ingest Alert" },
   { to: "/audit", label: "Audit Trail" },
+  { to: "/ml", label: "ML Triage Engine" },
   { to: "/admin", label: "Admin RBAC", adminOnly: true },
 ];
 
@@ -73,3 +74,4 @@ export default function NavBar() {
     </header>
   );
 }
+

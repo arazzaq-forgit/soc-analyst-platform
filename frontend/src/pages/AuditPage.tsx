@@ -1,13 +1,19 @@
-import PlaceholderPage from "../components/PlaceholderPage";
+import BackendPending from "../components/BackendPending";
 
 export default function AuditPage() {
   return (
-    <PlaceholderPage
+    <BackendPending
       title="Audit Trail"
       subtitle="AEGIS // AUDIT TRAIL"
-      items={[
-        "Every AI decision and user action, newest first",
-        "Needs a new backend endpoint first: the audit_logs table exists but nothing serves it yet",
+      summary="Every AI decision and user action, newest first."
+      exists={[
+        "An audit_logs table in the database",
+        "Alert ingestion already writes an alert_ingested entry",
+      ]}
+      missing={[
+        "An API endpoint that lists audit entries (not designed yet)",
+        "Audit entries for classifier scores, agent output and citations (Phase 2)",
+        "Saving RBAC denials to audit_logs (currently only logged to a file)",
       ]}
     />
   );

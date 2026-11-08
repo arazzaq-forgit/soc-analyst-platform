@@ -7,6 +7,7 @@ import ScoreBar from "../components/ScoreBar";
 import SeverityBadge from "../components/SeverityBadge";
 import StatusBadge from "../components/StatusBadge";
 import SummaryCard from "../components/SummaryCard";
+import AlertCharts from "../components/AlertCharts";
 import {
   SEVERITY_OPTIONS,
   SOURCE_OPTIONS,
@@ -126,6 +127,8 @@ export default function TriagePage() {
           tone="warn"
         />
       </div>
+
+      <AlertCharts alerts={alerts} />
 
       <div className="mt-6 rounded-xl border border-line bg-panel p-4">
         <div className="flex flex-wrap items-center gap-3">
@@ -310,3 +313,4 @@ export default function TriagePage() {
     </section>
   );
 }
+

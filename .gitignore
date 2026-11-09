@@ -26,3 +26,4 @@ dev.db
 
 # ChromaDB local vector store - generated, not source code
 ml/chroma_db/
+dev.db.bak

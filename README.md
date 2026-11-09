@@ -2,7 +2,7 @@
 
 AI-powered SOC alert triage and investigation platform — ingests security alerts,
 scores them using ML + LLM reasoning, and delivers analysts evidence-backed
-incident brief in real time.
+incident brief in the real time.
 
 ## Team
 - Ghouse — ML / Triage Lead

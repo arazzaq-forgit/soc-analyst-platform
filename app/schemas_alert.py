@@ -21,6 +21,7 @@ class AlertIngest(BaseModel):
     source_system: Optional[str] = None
     severity_raw: str
     asset_id: str
+    source_ip: Optional[str] = None
     asset_criticality: Optional[AssetCriticality] = AssetCriticality.UNKNOWN
     description: str
     mitre_technique: Optional[str] = None
@@ -36,6 +37,7 @@ class AlertOut(BaseModel):
     timestamp: datetime
     source: AlertSource
     asset_id: str
+    source_ip: Optional[str] = None
     source_system: Optional[str] = None
     severity_raw: str
     asset_criticality: Optional[AssetCriticality] = None
@@ -46,3 +48,4 @@ class AlertOut(BaseModel):
 
     class Config:
         from_attributes = True
+

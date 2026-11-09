@@ -57,6 +57,7 @@ class Alert(Base):
     source_system = Column(String, nullable=True)
     severity_raw = Column(String, nullable=False)
     asset_id = Column(String, index=True, nullable=False)
+    source_ip = Column(String, nullable=True, index=True)
     asset_criticality = Column(Enum(AssetCriticality), default=AssetCriticality.UNKNOWN, nullable=True)
     description = Column(Text, nullable=False)
     mitre_technique = Column(String, nullable=True)

@@ -38,6 +38,7 @@ def ingest_alert(
         source_system=payload.source_system,
         severity_raw=payload.severity_raw,
         asset_id=payload.asset_id,
+        source_ip=payload.source_ip,
         asset_criticality=payload.asset_criticality,
         description=payload.description,
         mitre_technique=payload.mitre_technique,

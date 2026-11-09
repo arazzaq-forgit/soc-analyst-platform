@@ -17,16 +17,13 @@ build/
 .DS_Store
 .vscode/
 .idea/
-
-# ML datasets
+# Raw datasets — too large for git, download separately
 ml/data/
 
-# Generated ML model artifacts
-ml/models/
+# Windows system files
+desktop.ini
+dev.db
 
-# Generated ML results
-ml/results/
-
-# Python cache
-__pycache__/
-*.py[cod]
+# ChromaDB local vector store - generated, not source code
+ml/chroma_db/
+dev.db.bak

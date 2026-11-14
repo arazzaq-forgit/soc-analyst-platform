@@ -26,26 +26,41 @@ def test_extract_severity():
     assert inv._extract_severity("no section here") == "unknown"
 
 
-def _free_alerts(db, n):
+def _seed_alerts(db, n):
+    import uuid
+    from datetime import datetime, timezone
+    from app.models_alert import AlertSource
     out = []
-    for a in db.query(Alert).all():
-        if not db.query(Investigation).filter(Investigation.alert_id == a.id).first():
-            out.append(a)
-        if len(out) == n:
-            return out
-    raise AssertionError(f"need {n} alerts without an investigation in dev.db")
+    for _ in range(n):
+        a = Alert(
+            alert_id="alrt_citest_" + uuid.uuid4().hex[:8],
+            timestamp=datetime.now(timezone.utc),
+            source=AlertSource.SIEM,
+            severity_raw="high",
+            asset_id="host-citest",
+            description="CI test alert",
+            raw_log="test raw log",
+        )
+        db.add(a)
+        out.append(a)
+    db.commit()
+    for a in out:
+        db.refresh(a)
+    return out
 
 
 def _cleanup(db, alert, original):
+    if alert is None:
+        return
     db.query(Investigation).filter(Investigation.alert_id == alert.id).delete()
-    db.query(AuditLog).filter(AuditLog.alert_id == alert.id, AuditLog.event_type == "investigation_completed").delete()
-    alert.triage_status = original
+    db.query(AuditLog).filter(AuditLog.alert_id == alert.id).delete()
+    db.query(Alert).filter(Alert.id == alert.id).delete()
     db.commit()
 
 
 def test_investigation_flow():
     db = next(get_db())
-    ok_alert, bad_alert = _free_alerts(db, 2)
+    ok_alert, bad_alert = _seed_alerts(db, 2)
     ok_id, bad_id = ok_alert.alert_id, bad_alert.alert_id
     ok_orig, bad_orig = ok_alert.triage_status, bad_alert.triage_status
 

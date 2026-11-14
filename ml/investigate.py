@@ -3,6 +3,7 @@ import os
 import chromadb
 from huggingface_hub import InferenceClient
 from groq import Groq
+from ml.embeddings import embed
 
 load_dotenv()
 
@@ -19,9 +20,7 @@ collection = chroma_client.get_or_create_collection(name="alert_history")
 
 def retrieve_context(query: str, n_results: int = 5):
     """Retrieve the most relevant alerts for a given query."""
-    query_embedding = hf_client.feature_extraction(
-        query, model="sentence-transformers/all-MiniLM-L6-v2"
-    )
+    query_embedding = embed(query)
     results = collection.query(query_embeddings=[query_embedding], n_results=n_results)
 
     retrieved = []

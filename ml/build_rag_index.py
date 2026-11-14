@@ -3,6 +3,7 @@ import os
 import chromadb
 from elasticsearch import Elasticsearch
 from huggingface_hub import InferenceClient
+from ml.embeddings import embed
 
 load_dotenv()
 
@@ -47,12 +48,9 @@ for hit in hits:
 
 # Embed all documents using HuggingFace, then store in ChromaDB
 print("Generating embeddings...")
-embeddings = [
-    hf_client.feature_extraction(doc, model="sentence-transformers/all-MiniLM-L6-v2")
-    for doc in documents
-]
+embeddings = [embed(doc) for doc in documents]
 
-collection.add(
+collection.upsert(
     documents=documents,
     embeddings=embeddings,
     metadatas=metadatas,

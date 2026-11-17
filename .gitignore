@@ -18,14 +18,11 @@ build/
 .vscode/
 .idea/
 
-# ML datasets
+# ML datasets (raw CSVs remain untracked due to size)
 ml/data/
-
-# Generated ML model artifacts
-ml/models/
-
-# Generated ML results
-ml/results/
+ml/chroma_db/
+ml/results/*_labels.csv
+dev.db
 
 # Python cache
 __pycache__/

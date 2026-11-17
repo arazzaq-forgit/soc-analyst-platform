@@ -1,0 +1,12 @@
+{
+    "model": "XGBoost",
+    "training_strategy": "All files except Wednesday",
+    "test_file": "Wednesday-workingHours.pcap_ISCX_processed.csv",
+    "training_rows": 175000,
+    "testing_rows": 691406,
+    "accuracy": 0.6839093094361345,
+    "true_negative": 439601,
+    "false_positive": 82,
+    "false_negative": 218465,
+    "true_positive": 33258
+}

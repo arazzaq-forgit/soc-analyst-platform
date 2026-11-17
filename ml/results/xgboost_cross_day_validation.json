@@ -1,0 +1,167 @@
+[
+    {
+        "held_out_day": "Monday",
+        "training_files": [
+            "Tuesday-WorkingHours.pcap_ISCX_processed.csv",
+            "Wednesday-workingHours.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Morning.pcap_ISCX_processed.csv"
+        ],
+        "test_files": [
+            "Monday-WorkingHours.pcap_ISCX_processed.csv"
+        ],
+        "training_rows": 175000,
+        "test_rows": 529481,
+        "training_benign": 136551,
+        "training_attack": 38449,
+        "test_benign": 529481,
+        "test_attack": 0,
+        "scale_pos_weight": 3.5514837837134907,
+        "accuracy": 0.9995901647084597,
+        "benign_precision": 1.0,
+        "benign_recall": 0.9995901647084597,
+        "benign_f1": 0.9997950403543818,
+        "attack_precision": 0.0,
+        "attack_recall": 0.0,
+        "attack_f1": 0.0,
+        "tn": 529264,
+        "fp": 217,
+        "fn": 0,
+        "tp": 0
+    },
+    {
+        "held_out_day": "Tuesday",
+        "training_files": [
+            "Monday-WorkingHours.pcap_ISCX_processed.csv",
+            "Wednesday-workingHours.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Morning.pcap_ISCX_processed.csv"
+        ],
+        "test_files": [
+            "Tuesday-WorkingHours.pcap_ISCX_processed.csv"
+        ],
+        "training_rows": 175000,
+        "test_rows": 445645,
+        "training_benign": 137321,
+        "training_attack": 37679,
+        "test_benign": 431813,
+        "test_attack": 13832,
+        "scale_pos_weight": 3.644496934632023,
+        "accuracy": 0.9683941253688474,
+        "benign_precision": 0.9689842237860219,
+        "benign_recall": 0.9993700977043304,
+        "benign_f1": 0.9839426243805341,
+        "attack_precision": 0.06529209621993128,
+        "attack_recall": 0.0013736263736263737,
+        "attack_f1": 0.0026906464632160307,
+        "tn": 431541,
+        "fp": 272,
+        "fn": 13813,
+        "tp": 19
+    },
+    {
+        "held_out_day": "Wednesday",
+        "training_files": [
+            "Monday-WorkingHours.pcap_ISCX_processed.csv",
+            "Tuesday-WorkingHours.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Morning.pcap_ISCX_processed.csv"
+        ],
+        "test_files": [
+            "Wednesday-workingHours.pcap_ISCX_processed.csv"
+        ],
+        "training_rows": 175000,
+        "test_rows": 691406,
+        "training_benign": 145595,
+        "training_attack": 29405,
+        "test_benign": 439683,
+        "test_attack": 251723,
+        "scale_pos_weight": 4.95136881482741,
+        "accuracy": 0.6950561609242616,
+        "benign_precision": 0.6759607976415841,
+        "benign_recall": 0.9997088811712075,
+        "benign_f1": 0.8065599339419239,
+        "attack_precision": 0.9968885971948759,
+        "attack_recall": 0.16292114745176245,
+        "attack_f1": 0.28007047687989567,
+        "tn": 439555,
+        "fp": 128,
+        "fn": 210712,
+        "tp": 41011
+    },
+    {
+        "held_out_day": "Thursday",
+        "training_files": [
+            "Monday-WorkingHours.pcap_ISCX_processed.csv",
+            "Tuesday-WorkingHours.pcap_ISCX_processed.csv",
+            "Wednesday-workingHours.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Morning.pcap_ISCX_processed.csv"
+        ],
+        "test_files": [
+            "Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX_processed.csv"
+        ],
+        "training_rows": 150000,
+        "test_rows": 458626,
+        "training_benign": 111876,
+        "training_attack": 38124,
+        "test_benign": 456410,
+        "test_attack": 2216,
+        "scale_pos_weight": 2.9345294302801386,
+        "accuracy": 0.8796601152137036,
+        "benign_precision": 0.9946932726380501,
+        "benign_recall": 0.8837908897701628,
+        "benign_f1": 0.935968340926731,
+        "attack_precision": 0.0012052049790030695,
+        "attack_recall": 0.02888086642599278,
+        "attack_f1": 0.0023138523834487245,
+        "tn": 403371,
+        "fp": 53039,
+        "fn": 2152,
+        "tp": 64
+    },
+    {
+        "held_out_day": "Friday",
+        "training_files": [
+            "Monday-WorkingHours.pcap_ISCX_processed.csv",
+            "Tuesday-WorkingHours.pcap_ISCX_processed.csv",
+            "Wednesday-workingHours.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX_processed.csv",
+            "Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX_processed.csv"
+        ],
+        "test_files": [
+            "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX_processed.csv",
+            "Friday-WorkingHours-Morning.pcap_ISCX_processed.csv"
+        ],
+        "training_rows": 125000,
+        "test_rows": 702718,
+        "training_benign": 114861,
+        "training_attack": 10139,
+        "test_benign": 413933,
+        "test_attack": 288785,
+        "scale_pos_weight": 11.328632014991616,
+        "accuracy": 0.7046354298594885,
+        "benign_precision": 0.6660909651343777,
+        "benign_recall": 0.9997342565101115,
+        "benign_f1": 0.7995003883292569,
+        "attack_precision": 0.9986494284626812,
+        "attack_recall": 0.281652440396835,
+        "attack_f1": 0.43938395384515655,
+        "tn": 413823,
+        "fp": 110,
+        "fn": 207448,
+        "tp": 81337
+    }
+]

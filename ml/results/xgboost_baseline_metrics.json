@@ -1,0 +1,21 @@
+{
+    "model": "XGBoost",
+    "dataset": "CICIDS2017",
+    "sample_size": 200000,
+    "features": 78,
+    "train_size": 160000,
+    "test_size": 40000,
+    "random_state": 42,
+    "scale_pos_weight": 4.201729575083715,
+    "accuracy": 0.999,
+    "benign_precision": 0.9996903065964695,
+    "benign_recall": 0.9990714948932219,
+    "benign_f1": 0.9993808049535604,
+    "attack_precision": 0.9961089494163424,
+    "attack_recall": 0.9986996098829649,
+    "attack_f1": 0.9974025974025974,
+    "true_negative": 32280,
+    "false_positive": 30,
+    "false_negative": 10,
+    "true_positive": 7680
+}

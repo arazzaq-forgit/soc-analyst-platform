@@ -1,0 +1,20 @@
+{
+    "model": "LogisticRegression",
+    "dataset": "CICIDS2017",
+    "sample_size": 200000,
+    "features": 78,
+    "train_size": 160000,
+    "test_size": 40000,
+    "random_state": 42,
+    "accuracy": 0.9108,
+    "benign_precision": 0.9890424011434016,
+    "benign_recall": 0.8995357474466109,
+    "benign_f1": 0.9421680497925311,
+    "attack_precision": 0.6941775014132278,
+    "attack_recall": 0.9581274382314694,
+    "attack_f1": 0.8050699300699301,
+    "true_negative": 29064,
+    "false_positive": 3246,
+    "false_negative": 322,
+    "true_positive": 7368
+}

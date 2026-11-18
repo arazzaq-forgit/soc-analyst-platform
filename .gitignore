@@ -17,13 +17,13 @@ build/
 .DS_Store
 .vscode/
 .idea/
-# Raw datasets — too large for git, download separately
-ml/data/
 
-# Windows system files
-desktop.ini
+# ML datasets (raw CSVs remain untracked due to size)
+ml/data/
+ml/chroma_db/
+ml/results/*_labels.csv
 dev.db
 
-# ChromaDB local vector store - generated, not source code
-ml/chroma_db/
-dev.db.bak
+# Python cache
+__pycache__/
+*.py[cod]

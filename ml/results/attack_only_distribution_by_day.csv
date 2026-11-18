@@ -1,0 +1,15 @@
+day,attack_type,count,percentage_of_attacks
+Friday,Bot,1966,0.6804581151379433
+Friday,DDoS,128027,44.311806259799326
+Friday,PortScan,158930,55.007735625062736
+Thursday,Infiltration,36,1.6245487364620936
+Thursday,Web Attack � Brute Force,1507,68.00541516245488
+Thursday,Web Attack � Sql Injection,21,0.947653429602888
+Thursday,Web Attack � XSS,652,29.422382671480147
+Tuesday,FTP-Patator,7938,57.37621973256234
+Tuesday,SSH-Patator,5897,42.62378026743765
+Wednesday,DoS GoldenEye,10293,4.073660714285714
+Wednesday,DoS Hulk,231073,91.45176355116514
+Wednesday,DoS Slowhttptest,5499,2.1763392857142856
+Wednesday,DoS slowloris,5796,2.293882978723404
+Wednesday,Heartbleed,11,0.0043534701114488344

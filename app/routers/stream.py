@@ -4,6 +4,7 @@ saves the result, and replays a stored brief if one already exists.
 """
 
 import asyncio
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
@@ -13,12 +14,13 @@ from app import investigation_service as svc
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models import User
-from app.models_alert import Alert
+from app.models_alert import Alert, TriageStatus
 from app.models_investigation import Investigation, InvestigationStatus
 from app.routers import investigations as inv
 
 router = APIRouter(prefix="/stream", tags=["stream"])
 
+STALE_AFTER = timedelta(minutes=3)
 CHUNK = 40
 DELAY = 0.02
 
@@ -46,6 +48,16 @@ async def sse_event_stream(alert_id: str, user_id):
             db.delete(row)
             db.commit()
             row = None
+
+        if row is not None and row.status == InvestigationStatus.IN_PROGRESS:
+            started = row.created_at
+            if started is not None and started.tzinfo is None:
+                started = started.replace(tzinfo=timezone.utc)
+            if started is not None and datetime.now(timezone.utc) - started > STALE_AFTER:
+                db.delete(row)
+                alert.triage_status = TriageStatus.PENDING
+                db.commit()
+                row = None
 
         if row is not None and row.status == InvestigationStatus.IN_PROGRESS:
             yield "event: error\ndata: An investigation is already running for this alert\n\n"

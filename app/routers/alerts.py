@@ -19,6 +19,7 @@ from app.models import User
 from app.models_alert import Alert, TriageStatus
 from app.models_audit import AuditLog
 from app.schemas_alert import AlertIngest, AlertOut
+from app import scoring
 
 router = APIRouter(prefix="/alerts", tags=["alerts"])
 
@@ -65,7 +66,20 @@ def ingest_alert(
         detail={"source": alert.source.value, "asset_id": alert.asset_id},
     )
     db.add(audit)
+
+    fp_score = scoring.compute_score(alert)
+    new_status = scoring.decide_status(fp_score)
+    if fp_score is not None:
+        alert.false_positive_score = fp_score
+    alert.triage_status = new_status
+    db.add(AuditLog(
+        event_type="alert_scored",
+        actor_type="ai_agent",
+        alert_id=alert.id,
+        detail={"false_positive_score": fp_score, "triage_status": new_status.value},
+    ))
     db.commit()
+    db.refresh(alert)
 
     return alert
 

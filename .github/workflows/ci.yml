@@ -36,6 +36,8 @@ jobs:
             files: "test_encryption.py test_schema.py test_ingestion.py test_streaming.py"
           - group: investigation
             files: "test_investigation_flow.py"
+          - group: scoring
+            files: "test_scoring_pipeline.py"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

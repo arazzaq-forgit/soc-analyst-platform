@@ -33,11 +33,13 @@ jobs:
           - group: ratelimit
             files: "test_rate_limit.py"
           - group: core
-            files: "test_encryption.py test_schema.py test_ingestion.py test_streaming.py"
+            files: "test_encryption.py test_schema.py test_ingestion.py"
           - group: investigation
             files: "test_investigation_flow.py"
           - group: scoring
             files: "test_scoring_pipeline.py"
+          - group: stream
+            files: "test_stream_real.py"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

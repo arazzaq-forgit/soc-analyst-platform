@@ -45,10 +45,10 @@ export default function BriefView({ brief, streaming, selected, onSelect }: Brie
             {chipFor(c)}
             {c.valid ? (
               <span>
-                {c.claim} <span className="text-muted">(evidence: {c.field})</span>
+                {c.claim} <span className="text-muted">(alert {c.alertId})</span>
               </span>
             ) : (
-              <span className="italic text-muted">{c.raw} (malformed citation, could not be read)</span>
+              <span className="italic text-muted">{c.alertId} (could not be read)</span>
             )}
           </p>
         );

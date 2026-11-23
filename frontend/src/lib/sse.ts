@@ -53,6 +53,9 @@ export async function streamSse(path: string, options: StreamOptions): Promise<v
         data.push(value);
       }
     }
+    if (event === "error") {
+      throw new ApiError(0, data.join(" ") || "The investigation failed.");
+    }
     if (event === "done") {
       onDone();
       return;

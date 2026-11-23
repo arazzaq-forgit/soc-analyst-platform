@@ -192,10 +192,6 @@ function InvestigationView({ alertId }: { alertId: string }) {
             {status === "error" && error ? ` ${error}` : ""}
           </p>
 
-          <p className="mt-3 rounded-md border border-st-pending/40 bg-st-pending/10 px-3 py-2 text-xs text-st-pending">
-            Mock content: the backend currently streams a fixed sample brief, not the real AI agent.
-          </p>
-
           <div className="mt-4 min-h-48 rounded-md border border-line bg-base p-4">
             {text === "" && status !== "streaming" ? (
               <p className="text-sm text-muted">The incident brief will appear here.</p>

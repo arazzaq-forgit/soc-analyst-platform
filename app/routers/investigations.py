@@ -48,22 +48,14 @@ router = APIRouter(prefix="/investigate", tags=["investigations"])
 
 
 def _extract_severity(brief: str) -> str:
-    """Pulls a short severity label (Low/Medium/High/Critical) out of the
-    brief's SEVERITY ASSESSMENT section, for storing as confidence_score.
-    Falls back to 'unknown' if the pattern isn't found - the full brief
-    text is still stored in incident_brief regardless."""
-    match = re.search(
-        r"SEVERITY ASSESSMENT.*?\n(.*?)(–|-)",
-        brief,
-        re.IGNORECASE | re.DOTALL,
-    )
-    if match:
-        candidate = match.group(1).strip().strip("*").strip()
-        for level in ("Critical", "High", "Medium", "Low"):
-            if level.lower() in candidate.lower():
-                return level
+    """Return Critical/High/Medium/Low from the first line of the
+    SEVERITY ASSESSMENT section, or 'unknown' if not found."""
+    m = re.search(r"SEVERITY ASSESSMENT[^\n]*\n+([^\n]*)", brief, re.IGNORECASE)
+    if m:
+        lvl = re.search(r"\b(Critical|High|Medium|Low)\b", m.group(1), re.IGNORECASE)
+        if lvl:
+            return lvl.group(1).capitalize()
     return "unknown"
-
 
 @router.post("/{alert_id}")
 def create_investigation(
@@ -90,6 +82,7 @@ def create_investigation(
         alert_id=alert.id,
         status=InvestigationStatus.IN_PROGRESS,
     )
+    alert.triage_status = TriageStatus.INVESTIGATING
     db.add(investigation)
     db.commit()
     db.refresh(investigation)
@@ -108,11 +101,12 @@ def create_investigation(
         investigation.timeline = [
             {"alert_id": c["alert_id"], "text": c["text"]} for c in context
         ]
-        investigation.confidence_score = _extract_severity(brief)
+        investigation.severity = _extract_severity(brief)
+        investigation.confidence_score = investigation.severity
         investigation.status = InvestigationStatus.COMPLETED
         investigation.completed_at = datetime.now(timezone.utc)
 
-        alert.triage_status = TriageStatus.INVESTIGATED if hasattr(TriageStatus, "INVESTIGATED") else alert.triage_status
+        alert.triage_status = TriageStatus.RESOLVED
 
         db.add(AuditLog(
             event_type="investigation_completed",
@@ -130,7 +124,8 @@ def create_investigation(
         db.refresh(investigation)
 
     except Exception as e:
-        investigation.status = InvestigationStatus.FAILED if hasattr(InvestigationStatus, "FAILED") else investigation.status
+        investigation.status = InvestigationStatus.FAILED
+        alert.triage_status = TriageStatus.PENDING
         db.commit()
         raise HTTPException(status_code=500, detail=f"Investigation failed: {str(e)}")
 
@@ -140,6 +135,7 @@ def create_investigation(
         "status": investigation.status,
         "incident_brief": investigation.incident_brief,
         "citations": investigation.citations,
+        "severity": investigation.severity,
         "confidence_score": investigation.confidence_score,
         "created_at": investigation.created_at,
         "completed_at": investigation.completed_at,
@@ -170,6 +166,7 @@ def get_investigation(
         "status": investigation.status,
         "incident_brief": investigation.incident_brief,
         "citations": investigation.citations,
+        "severity": investigation.severity,
         "confidence_score": investigation.confidence_score,
         "created_at": investigation.created_at,
         "completed_at": investigation.completed_at,

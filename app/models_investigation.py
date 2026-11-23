@@ -32,6 +32,7 @@ class Investigation(Base):
     timeline = Column(JSON, default=list, nullable=False)
     citations = Column(JSON, default=list, nullable=False)
     confidence_score = Column(String, nullable=True)
+    severity = Column(String(10), nullable=True)  # Low / Medium / High / Critical
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     completed_at = Column(DateTime(timezone=True), nullable=True)
